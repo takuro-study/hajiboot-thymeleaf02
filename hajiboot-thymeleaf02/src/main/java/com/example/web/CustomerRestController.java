@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -61,7 +62,35 @@ public class CustomerRestController {
 		customerService.create(customer);
 		return "redirect:/customers";
 	}
+
+	@GetMapping(path = "edit", params = "form")
+	String editForm(@RequestParam Integer id, CustomerForm form) {
+		Customer customer = customerService.findOne(id);
+		BeanUtils.copyProperties(customer, form);
+		return "customers/edit";
+	}
 	
+	@PostMapping(path = "edit")
+	String editForm(@RequestParam Integer id, @Validated CustomerForm form, BindingResult result) {
+		if (result.hasErrors()) {
+			return editForm(id, form);
+		}
+		Customer customer = new Customer();
+		BeanUtils.copyProperties(form, customer);
+		customer.setId(id);
+		customerService.update(customer);
+		return "redirect:/customers";
+	}
 	
+	@PostMapping(path = "edit", params = "goToTop")
+	String goToTop() {
+		return "redirect:/customers";
+	}
+	
+	@PostMapping(path = "delete")
+	String delete(@RequestParam Integer id) {
+		customerService.delete(id);
+		return "redirect:/customers";
+	}
 }
 

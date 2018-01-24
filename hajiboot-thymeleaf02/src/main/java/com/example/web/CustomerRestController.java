@@ -28,7 +28,7 @@ import com.example.domain.Customer;
 import com.example.service.CustomerService;
 
 @Controller
-@RequestMapping("api/customers")
+@RequestMapping("customers")
 public class CustomerRestController {
 
 	@Autowired
